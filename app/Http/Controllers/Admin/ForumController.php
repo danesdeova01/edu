@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Forum;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ForumController extends Controller
 {
@@ -25,8 +26,9 @@ class ForumController extends Controller
             'url' => url('admin/forum'),
         ]);
     }
-    
-    public function store(Request $request) {
+
+    public function store(Request $request)
+    {
         Forum::create([
             'judul' => $request->judul,
             'konten' => $request->konten,
@@ -35,10 +37,10 @@ class ForumController extends Controller
         Alert::success('Berhasil', 'Topik diskusi berhasil ditambahkan');
         return redirect('admin/forum');
     }
-    
-    public function show($id) {
+
+    public function show($id)
+    {
         $forum = Forum::with(['user', 'replies.user'])->findOrFail($id);
         return view('admin.forum.detail', compact('forum'));
     }
-    
 }

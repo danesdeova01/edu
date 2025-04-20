@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class ForumReply extends Model
 {
     use HasFactory;
-    public function user() {
+
+    protected $fillable = ['forum_id', 'user_id', 'konten'];
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function forum() {
+    public function forum()
+    {
         return $this->belongsTo(Forum::class);
     }
-    
 }

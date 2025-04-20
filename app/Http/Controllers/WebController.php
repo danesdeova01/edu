@@ -9,6 +9,7 @@ use App\Models\Materi;
 use App\Models\Soal;
 use App\Models\Tugas;
 use App\Models\Forum;
+use App\Models\ForumReply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -20,7 +21,7 @@ class WebController extends Controller
         if (!\Auth::check()) {
             return redirect()->route('login'); // Arahkan ke halaman login
         }
-    
+
         // Jika sudah login, tampilkan halaman utama
         return view('welcome', [
             'menuActive'     => 'beranda',
@@ -162,5 +163,38 @@ class WebController extends Controller
         Alert::success('Berhasil', ucwords('Submit atau kirim tugas anda telah berhasil'));
 
         return redirect('kirimtugas');
+    }
+
+    public function forum()
+    {
+        return view('forum', [
+            'menuActive' => 'forum',
+            'forums' => Forum::withCount('replies')->latest()->get(),
+        ]);
+    }
+
+    public function forumDetail($id)
+    {
+        return view('forum-detail', [
+            'menuActive' => 'forum',
+            'forum'      => Forum::find($id),
+        ]);
+    }
+
+    public function forumReply(Request $request, $id)
+    {
+        $request->validate([
+            'konten' => 'required|string',
+        ]);
+
+        ForumReply::create([
+            'forum_id' => $id,
+            'user_id' => auth()->id(),
+            'konten' => $request->konten,
+        ]);
+
+        Alert::success('Berhasil', ucwords('Balasan berhasil dikirim'));
+
+        return redirect()->back();
     }
 }

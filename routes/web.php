@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,9 @@ Route::post('/kuis', [App\Http\Controllers\WebController::class, 'submitLatihan'
 Route::get('/kirimtugas', [App\Http\Controllers\WebController::class, 'kirimtugas']);
 Route::get('/kirimtugas/submit/{id}', [App\Http\Controllers\WebController::class, 'kirimtugasForm']);
 Route::post('/kirimtugas/submit/{id}', [App\Http\Controllers\WebController::class, 'kirimtugasSubmit']);
+Route::get('/forum', [App\Http\Controllers\WebController::class, 'forum']);
+Route::get('/forum/{id}', [App\Http\Controllers\WebController::class, 'forumDetail']);
+Route::post('/forum/{id}', [App\Http\Controllers\WebController::class, 'forumReply']);
 
 Auth::routes([
     'register' => false,
@@ -43,5 +47,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/admin/tugas', App\Http\Controllers\Admin\TugasController::class);
     Route::resource('admin/forum', App\Http\Controllers\Admin\ForumController::class);
     Route::post('admin/forum/{forum}/reply', [App\Http\Controllers\Admin\ForumReplyController::class, 'store'])->name('forum.reply.store');
-    
 });

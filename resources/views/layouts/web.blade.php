@@ -55,17 +55,19 @@
                         </li>
                     </ul>
                 </div>
-                <form class="form-inline ml-auto">
-                    {{-- <ul class="navbar-nav">
-                        <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i
-                                    class="fas fa-search"></i></a></li>
+                <div class="ml-auto">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-link nav-link"
+                                    style="display: inline; cursor: pointer;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </li>
                     </ul>
-                    <div class="search-element">
-                        <input class="form-control" type="search" placeholder="Cari Materi.." aria-label="Search"
-                            data-width="300">
-                        <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-                    </div> --}}
-                </form>
+                </div>
             </nav>
 
             <nav class="navbar navbar-secondary navbar-expand-lg">
@@ -101,6 +103,12 @@
                                 <span>Kirim Tugas</span>
                             </a>
                         </li>
+                        <li class="nav-item {{ $menuActive == 'forum' ? 'active' : '' }}">
+                            <a href="{{ url('/forum', []) }}" class="nav-link">
+                                <i class="fas fa-comments"></i>
+                                <span>Forum Diskusi</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -123,8 +131,7 @@
             </div>
             <footer class="main-footer">
                 <p class="text-center">
-                    Copyright &copy; {{ date('Y') }} By <a href="#"
-                        target="_blank">{{ env('APP_NAME') }}</a>
+                    Copyright &copy; {{ date('Y') }} By <a href="#" target="_blank">{{ env('APP_NAME') }}</a>
                 </p>
             </footer>
         </div>
