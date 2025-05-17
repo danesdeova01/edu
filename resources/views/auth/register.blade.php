@@ -7,7 +7,7 @@
     <title>{{ env('APP_NAME') }}</title>
 
     <!-- General CSS Files -->
-    <link rel="shortcut icon" href="{{ asset('img/logo.svg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://demo.getstisla.com/assets/modules/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://demo.getstisla.com/assets/modules/fontawesome/css/all.min.css">
 
@@ -27,7 +27,7 @@
                     <div
                         class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
                         <div class="login-brand">
-                            <img src="{{ asset('img/logo.svg') }}" alt="logo" width="80">
+                            <img src="{{ asset('img/logo.png') }}" alt="logo" width="80">
                         </div>
 
                         <div class="card card-primary">

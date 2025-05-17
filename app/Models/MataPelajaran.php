@@ -9,20 +9,19 @@ class MataPelajaran extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
+    protected $fillable = [
+        'nama',
+        'kelas_id',
+        'slug',
+    ];
 
-    public function materis()
+    public function kelas()
     {
-        return $this->hasMany('App\Models\Materi', 'matapelajaran_id');
-    }
+        return $this->belongsToMany(Kelas::class, 'kelas_matapelajaran', 'matapelajaran_id', 'kelas_id');
 
-    public function tugas()
-    {
-        return $this->hasMany('App\Models\Tugas', 'tugas_id');
     }
+    public function topiks()
+{
+    return $this->hasMany(Topik::class,  'matapelajaran_id');
+}
 }

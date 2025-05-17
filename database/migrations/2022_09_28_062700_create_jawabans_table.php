@@ -19,6 +19,7 @@ class CreateJawabansTable extends Migration
             $table->string('nama');
             $table->string('no_induk');
             $table->string('file_jawab');
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

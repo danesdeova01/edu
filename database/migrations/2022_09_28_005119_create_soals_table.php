@@ -22,6 +22,7 @@ class CreateSoalsTable extends Migration
             $table->string('pilihan_d');
             $table->string('pilihan_e');
             $table->string('kunci_jawaban');
+            $table->foreignId('materi_id')->references('id')->on('topiks')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

@@ -3,26 +3,33 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MataPelajaran;
 use App\Models\Soal;
+use App\Models\Topik;
+use App\Models\JenisUjian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class SoalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         return view('admin.soal.index', [
-            'menuActive' => 'kuis',
-            'soals'      => Soal::latest()->get(),
+            'menuActive'   => 'kuis',
+            'soals'        => Soal::with('materi')->latest()->get(),
+            'jenisUjian'   => JenisUjian::all(),
         ]);
     }
+    public function updateJenisUjianTimer(Request $request)
+    {
+        foreach ($request->timer as $id => $value) {
+            JenisUjian::where('id', $id)->update(['timer' => $value]);
+        }
 
+        Alert::success('Berhasil', 'Timer berhasil diperbarui');
+        return redirect()->back();
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -34,6 +41,7 @@ class SoalController extends Controller
             'menuActive' => 'kuis',
             'isEdit'     => false,
             'url'        => url('admin/kuis'),
+            'mata_pelajarans' => Topik::all()
         ]);
     }
 
@@ -45,20 +53,45 @@ class SoalController extends Controller
      */
     public function store(Request $request)
     {
-        Soal::create([
-            'pertanyaan'    => $request->pertanyaan,
-            'pilihan_a'     => $request->pilihan_a,
-            'pilihan_b'     => $request->pilihan_b,
-            'pilihan_c'     => $request->pilihan_c,
-            'pilihan_d'     => $request->pilihan_d,
-            'pilihan_e'     => $request->pilihan_e,
-            'kunci_jawaban' => $request->kunci_jawaban,
-        ]);
+        $jenisSoal = $request->input('jenis_soal');
+        $jenisUjian = $request->input('jenis_ujian');  // Get
+
+        $soal = new Soal();
+
+        $soal->pertanyaan = $request->input('pertanyaan');
+        $soal->materi_id = $request->input('topik');
+        $soal->jenis_soal = $jenisSoal;
+        $soal->jenis_ujian = $jenisUjian;
+
+
+        if ($jenisSoal == 'menjodohkan') {
+            $soal->pencocokan = $request->input('menjodohkan') ?? 'cocok';
+        } else if ($jenisSoal == 'pilihan_ganda') {
+            $soal->pilihan_a = $request->pilihan_a;
+            $soal->pilihan_b = $request->pilihan_b;
+            $soal->pilihan_c = $request->pilihan_c;
+            $soal->pilihan_d = $request->pilihan_d;
+            $soal->pilihan_e = $request->pilihan_e;
+            $soal->kunci_jawaban = $request->kunci_jawaban;
+        } else if ($jenisSoal == 'pilihan_ganda_kompleks') {
+            $soal->pilihan_a = $request->pilihan_a;
+            $soal->pilihan_b = $request->pilihan_b;
+            $soal->pilihan_c = $request->pilihan_c;
+            $soal->pilihan_d = $request->pilihan_d;
+            $soal->pilihan_e = $request->pilihan_e;
+            $soal->kunci_jawaban = json_encode($request->input('kunci_jawaban', []));
+        } else if ($jenisSoal == 'uraian_singkat') {
+            $soal->uraian = $request->jawaban_uraian;
+        }
+
+        $soal->save();
 
         Alert::success('Berhasil', ucwords('data latihan kuis telah ditambahkan'));
 
+        // Redirect ke halaman kuis admin
         return redirect('admin/kuis');
     }
+
 
     /**
      * Display the specified resource.
@@ -84,6 +117,7 @@ class SoalController extends Controller
             'isEdit'     => true,
             'url'        => url('admin/kuis/' . $id),
             'data'       => Soal::find($id),
+            'mata_pelajarans' => MataPelajaran::all()
         ]);
     }
 
@@ -96,20 +130,57 @@ class SoalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Soal::find($id)->update([
-            'pertanyaan'    => $request->pertanyaan,
-            'pilihan_a'     => $request->pilihan_a,
-            'pilihan_b'     => $request->pilihan_b,
-            'pilihan_c'     => $request->pilihan_c,
-            'pilihan_d'     => $request->pilihan_d,
-            'pilihan_e'     => $request->pilihan_e,
-            'kunci_jawaban' => $request->kunci_jawaban,
-        ]);
+        // Mencari soal berdasarkan ID
+        $soal = Soal::findOrFail($id);
+        $jenisUjian = $request->input('jenis_ujian');  // Get
 
-        Alert::warning('Berhasil', ucwords('data latihan kuis telah diperbarui'));
+
+
+
+
+
+
+
+
+        // Menentukan jenis soal
+        $jenisSoal = $request->input('jenis_soal');
+
+        // Memperbarui data soal
+        $soal->pertanyaan = $request->input('pertanyaan');
+        $soal->materi_id = $request->input('topik');
+        $soal->jenis_soal = $jenisSoal;
+        $soal->jenis_ujian = $jenisUjian;
+
+        // Menangani soal menjodohkan
+        if ($jenisSoal == 'menjodohkan') {
+            $soal->pencocokan = $request->input('menjodohkan') ?? 'cocok';
+        }
+        // Menangani soal pilihan ganda
+        else if ($jenisSoal == 'pilihan_ganda') {
+            $soal->pilihan_a = $request->pilihan_a;
+            $soal->pilihan_b = $request->pilihan_b;
+            $soal->pilihan_c = $request->pilihan_c;
+            $soal->pilihan_d = $request->pilihan_d;
+            $soal->pilihan_e = $request->pilihan_e;
+            $soal->kunci_jawaban = $request->kunci_jawaban;
+        } else if ($jenisSoal == 'pilihan_ganda_kompleks') {
+            $soal->pilihan_a = $request->pilihan_a;
+            $soal->pilihan_b = $request->pilihan_b;
+            $soal->pilihan_c = $request->pilihan_c;
+            $soal->pilihan_d = $request->pilihan_d;
+            $soal->pilihan_e = $request->pilihan_e;
+            $soal->kunci_jawaban = json_encode($request->input('kunci_jawaban', []));
+        } else if ($jenisSoal == 'uraian_singkat') {
+            $soal->uraian = $request->jawaban_uraian;
+        }
+
+        $soal->save();
+
+        Alert::success('Berhasil', ucwords('data latihan kuis telah diperbarui'));
 
         return redirect('admin/kuis');
     }
+
 
     /**
      * Remove the specified resource from storage.

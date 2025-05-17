@@ -1,34 +1,26 @@
 @extends('layouts.web')
-
-@section('title')
-    {{ $matapelajaran->nama }}
-@endsection
-
-@section('breadcrumb')
-    <div class="breadcrumb-item">Materi</div>
-    <div class="breadcrumb-item">{{ $matapelajaran->nama }}</div>
-@endsection
-
+@section('title', $matapelajaran->nama)
 @section('content')
+<div class="container">
+    <p><strong>Kelas:</strong> {{ $kelas ? $kelas->nama : '-' }}</p>
+    <a href="{{ route('matapelajaran.show', $kelas ? $kelas->slug : '') }}" class="btn btn-secondary mb-3">Kembali ke Materi Kelas {{ $kelas ? $kelas->nama : '' }}</a>
     <div class="row">
-        @foreach ($matapelajaran->materis as $data)
-            <div class="col-lg-3 col-md-3 col-sm-4 col-6 mb-3">
-                <div class="card" style="border-radius: 1rem">
+        @if(isset($topiks) && $topiks->count() > 0)
+            @foreach($topiks as $topik)
+            <div class="col-md-4 mb-3">
+                <div class="card">
                     <div class="card-body">
-                        <h3 class="badge badge-primary mb-3">{{ $loop->iteration }}</h3>
-                        <p class="m-0">{{ $data->nama }}</p>
-                        <div style="font-size: .90rem" class="mt-4">
-                            <a href="{{ url('topik/' . $data->id) }}"
-                                class="d-flex text-decoration-none align-items-center justify-content-between">
-                                <span>
-                                    Detail Topik
-                                </span>
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </div>
+                        <h5 class="card-title">{{ $topik->nama }}</h5>
+                        <a href="{{ route('topik.detail', $topik->id) }}" class="btn btn-primary">Lihat Detail Topik</a>
                     </div>
                 </div>
             </div>
-        @endforeach
+            @endforeach
+        @else
+        <div class="col-12">
+            <p class="text-center">Belum ada topik untuk materi ini.</p>
+        </div>
+        @endif
     </div>
+</div>
 @endsection

@@ -7,7 +7,7 @@
     <title>{{ env('APP_NAME') }}</title>
 
     <!-- General CSS Files -->
-    <link rel="shortcut icon" href="{{ asset('img/logo.svg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
@@ -28,7 +28,7 @@
                     <div
                         class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
                         <div class="login-brand">
-                            <img src="{{ asset('img/logo.svg') }}" alt="logo" width="80" class="">
+                            <img src="{{ asset('img/logo.png') }}" alt="logo" width="170" class="">
                         </div>
 
                         <div class="card card-primary">
@@ -83,9 +83,6 @@
         <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
             Login
         </button>
-    </div>
-    <div class="mt-4 text-muted text-center">
-        Don't have an account? <a href="{{ url('/register') }}">Create One</a>
     </div>
     </form>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kelas;
 use App\Models\MataPelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -11,106 +12,132 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MataPelajaranController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Tampilkan daftar mata pelajaran dengan relasi kelas.
      */
     public function index()
     {
+        $mata_pelajarans = MataPelajaran::with('kelas')->latest()->get();
+
         return view('admin.matapelajaran.index', [
-            'menuActive'     => 'materi',
-            'matapelajarans' => MataPelajaran::latest()->get(),
+            'menuActive' => 'matapelajaran',
+            'mata_pelajarans' => $mata_pelajarans,
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Tampilkan form tambah mata pelajaran baru.
      */
     public function create()
     {
+        $kelas = Kelas::all();
+
         return view('admin.matapelajaran.form', [
-            'menuActive' => 'materi',
-            'isEdit'     => false,
-            'url'        => url('admin/materi'),
+            'menuActive' => 'matapelajaran',
+            'isEdit' => false,
+            'url' => url('admin/matapelajaran'),
+            'kelas' => $kelas,
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Simpan data mata pelajaran baru ke database.
      */
     public function store(Request $request)
     {
-        MataPelajaran::create([
-            'nama' => $request->nama,
-            'slug' => Str::slug($request->nama),
+        // Validasi input
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255|unique:mata_pelajarans,nama',
         ]);
 
-        Alert::success('Berhasil', ucwords('data materi telah ditambahkan'));
+        // Buat slug otomatis dari nama
+        $slug = Str::slug($validated['nama']);
 
-        return redirect('admin/materi');
-    }
+        // Simpan data mata pelajaran baru
+        $matapelajaran = MataPelajaran::create([
+            'nama' => $validated['nama'],
+            'slug' => $slug,
+        ]);
+
+    // Ambil semua kelas
+    $kelasAll = Kelas::all();
+
+    // Attach mata pelajaran ke semua kelas
+    $matapelajaran->kelas()->attach($kelasAll->pluck('id')->toArray());
+
+    return redirect()->route('admin.matapelajaran.index')->with('success', 'Mata pelajaran berhasil ditambahkan');
+}
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Tampilkan form edit data mata pelajaran.
      */
     public function edit($id)
     {
+        $data = MataPelajaran::findOrFail($id);
+        $kelas = Kelas::all();
+
         return view('admin.matapelajaran.form', [
-            'menuActive' => 'materi',
-            'isEdit'     => true,
-            'url'        => url('admin/materi/' . $id),
-            'data'       => MataPelajaran::find($id),
+            'menuActive' => 'matapelajaran',
+            'isEdit' => true,
+            'url' => url('admin/matapelajaran/' . $id),
+            'data' => $data,
+            'kelas' => $kelas,
         ]);
     }
 
+    // Tampilkan daftar topik dari mata pelajaran yang dipilih
+    public function detail($matapelajaran)
+    {
+        $matapelajaranModel = MataPelajaran::with('kelas', 'topiks')
+        ->where('slug', $matapelajaran)
+        ->orWhere('id', $matapelajaran)
+        ->firstOrFail();
+
+        $kelas = $matapelajaranModel->kelas->first();
+
+        return view('matapelajaran-detail', [
+            'matapelajaran' => $matapelajaranModel,
+            'kelas' => $kelas,
+        ]);
+
+    }
+
+    public function topiks()
+{
+    return $this->hasMany(\App\Models\Topik::class, 'matapelajaran_id');
+}
+
+
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update data mata pelajaran di database.
      */
     public function update(Request $request, $id)
     {
-        MataPelajaran::find($id)->update([
-            'nama' => $request->nama,
-            'slug' => Str::slug($request->nama),
+        // Validasi input
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
         ]);
 
-        Alert::warning('Berhasil', ucwords('data materi telah diperbarui'));
+        // Buat slug otomatis dari nama
+        $validatedData['slug'] = Str::slug($validatedData['nama']);
 
-        return redirect('admin/materi');
+        // Update data
+        MataPelajaran::findOrFail($id)->update($validatedData);
+
+        Alert::warning('Berhasil', 'Data mata pelajaran telah diperbarui');
+
+        return redirect()->route('admin.matapelajaran.index');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Hapus data mata pelajaran dari database.
      */
     public function destroy($id)
     {
-        MataPelajaran::find($id)->delete();
-        Alert::error('Berhasil', ucwords('data materi telah dihapus'));
-        return redirect('admin/materi');
+        MataPelajaran::findOrFail($id)->delete();
+
+        Alert::error('Berhasil', 'Data mata pelajaran telah dihapus');
+
+        return redirect()->route('admin.matapelajaran.index');
     }
 }

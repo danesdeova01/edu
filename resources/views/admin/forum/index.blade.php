@@ -3,15 +3,6 @@
 @section('title', 'Forum Diskusi')
 
 @section('content')
-    <div class="main-content">
-        <section class="section">
-            <div class="section-header">
-                <h1>Forum Diskusi</h1>
-                <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ url('/home') }}">Dashboard</a></div>
-                    <div class="breadcrumb-item">Forum Diskusi</div>
-                </div>
-            </div>
 
             <div class="section-body">
                 <div class="row">
@@ -43,12 +34,12 @@
                                                     <td>{{ $forum->user->name }}</td>
                                                     <td>{{ $forum->created_at->format('d M Y') }}</td>
                                                     <td>
-                                                        <a href="{{ url('admin/forum/' . $forum->id) }}" class="btn btn-sm btn-info">Detail</a>
-                                                        <form action="{{ url('admin/forum/' . $forum->id) }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">Hapus</button>
-                                                        </form>
+                                                        <form action="{{ route('admin.forum.destroy', $forum->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus topik ini?')">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+</form>
+
                                                     </td>
                                                 </tr>
                                             @endforeach

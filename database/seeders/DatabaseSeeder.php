@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kelas;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,13 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        $this->call([
-            AdminSeeder::class,
-            MataPelajaranSeeder::class,
-            SoalSeeder::class,
-            PenelitiSeeder::class,
-            KompetensiSeeder::class,
-        ]);
+
+
+
+        // Seed kelas table with class options from A to K
+        $kelasOptions = range('A', 'K');
+
+        foreach ($kelasOptions as $kelasOption) {
+            Kelas::create([
+                'nama' => $kelasOption,
+                'slug' => Str::slug($kelasOption), // Ensures a consistent, lowercase slug
+            ]);
+        }
+
+        $this->call([AdminSeeder::class, MataPelajaranSeeder::class, PenelitiSeeder::class, TopikSeeder::class, SoalSeeder::class, SiswaSeeder::class]);
     }
 }

@@ -7,7 +7,7 @@
     <title>{{ env('APP_NAME') }} | @yield('title')</title>
 
     <!-- General CSS Files -->
-    <link rel="shortcut icon" href="{{ asset('img/logo.svg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
 
@@ -19,6 +19,9 @@
     <!-- Template CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/stisla@2.3.0/assets/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/stisla@2.3.0/assets/css/components.min.css">
+
+    <style>
+    </style>
 </head>
 
 <body>
@@ -293,10 +296,16 @@
                             </a>
                         </li>
                         <li class="menu-header">Master Data</li>
-                        <li class="nav-item {{ $menuActive == 'materi' ? 'active' : '' }}">
-                            <a class="nav-link" href="{{ url('/admin/materi', []) }}">
+                        <li class="nav-item {{ $menuActive == 'kelas' ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ url('/admin/kelas', []) }}">
+                                <i class="fas fa-school"></i>
+                                <span>Kelas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{ $menuActive == 'matapelajaran' ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ url('/admin/matapelajaran', []) }}">
                                 <i class="fas fa-book"></i>
-                                <span>Materi</span>
+                                <span>Mata Pelajaran</span>
                             </a>
                         </li>
                         <li class="nav-item {{ $menuActive == 'topik' ? 'active' : '' }}">
@@ -305,16 +314,10 @@
                                 <span>Topik</span>
                             </a>
                         </li>
-                        <li class="nav-item {{ $menuActive == 'kompetensi' ? 'active' : '' }}">
-                            <a class="nav-link" href="{{ url('/admin/kompetensi', []) }}">
-                                <i class="fas fa-brain"></i>
-                                <span>Kompetensi</span>
-                            </a>
-                        </li>
                         <li class="nav-item {{ $menuActive == 'kuis' ? 'active' : '' }}">
                             <a class="nav-link" href="{{ url('/admin/kuis', []) }}">
                                 <i class="fas fa-question-circle"></i>
-                                <span>Latihan Kuis</span>
+                                <span>Ujian</span>
                             </a>
                         </li>
                         <li class="nav-item {{ $menuActive == 'tugas' ? 'active' : '' }}">
@@ -323,10 +326,19 @@
                                 <span>Daftar Tugas</span>
                             </a>
                         </li>
+
                         <li class="nav-item {{ $menuActive == 'forum' ? 'active' : '' }}">
-                         <a href="{{ url('admin/forum') }}" class="nav-link">
-                        <i class="fas fa-comments"></i>
-                        <span>Forum Diskusi</span>
+                            <a href="{{ url('admin/forum') }}" class="nav-link">
+                                <i class="fas fa-comments"></i>
+                                <span>Forum Diskusi</span>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-item {{ $menuActive == 'siswa' ? 'active' : '' }}">
+                            <a href="{{ url('admin/siswa') }}" class="nav-link">
+                                <i class="fas fa-user"></i>
+                                <span>Siswa</span>
                             </a>
                         </li>
 
@@ -352,8 +364,8 @@
             </div>
             <footer class="main-footer">
                 <div class="footer-left">
-                    Copyright &copy; {{ date('Y') }} <div class="bullet"></div> Development By <a
-                        href="https:wa.me/+6285726995301" target="_blank">djardev</a>
+                    Copyright &copy; {{ date('Y') }} <div class="bullet"></div> Development By <a href=""
+                        target="_blank">Capstone Project-FILKOM UB</a>
                 </div>
                 <div class="footer-right">
                     Version 1.0.0

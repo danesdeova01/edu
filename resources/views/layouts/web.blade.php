@@ -7,7 +7,7 @@
     <title>{{ env('APP_NAME') }} | @yield('title')</title>
 
     <!-- General CSS Files -->
-    <link rel="shortcut icon" href="{{ asset('img/logo.svg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
 
@@ -45,68 +45,100 @@
                     <a class="sidebar-gone-show nav-collapse-toggle nav-link" href="#">
                         <i class="fas fa-ellipsis-v"></i>
                     </a>
-                    <ul class="navbar-nav">
-                        <li class="nav-item active">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#profileModal">Profile
-                                Peneliti</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a href="https://wa.me/+6285786444814" target="_blank" class="nav-link">Kontak Saya</a>
-                        </li>
                     </ul>
                 </div>
                 <div class="ml-auto">
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-link nav-link"
-                                    style="display: inline; cursor: pointer;">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
-                                </button>
-                            </form>
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-item text-white" href="#" data-toggle="modal"
+                                data-target="#logoutModal">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a>
                         </li>
                     </ul>
                 </div>
+
             </nav>
+
+            <!-- Modal Logout -->
+            <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog">
+                    <div class="modal-content text-center">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Detail Profil</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @php
+                                $initial = strtoupper(substr(Auth::user()->name, 0, 1));
+                            @endphp
+
+                            <div class="mx-auto mb-3" style="width: 80px; height: 80px;">
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto"
+                                    style="width: 80px; height: 80px; font-size: 32px; font-weight: bold;">
+                                    {{ $initial }}
+                                </div>
+                            </div>
+
+                            <h5 class="mb-1">{{ Auth::user()->name }}</h5>
+                            <p class="text-muted mb-3">{{ Auth::user()->email }}</p>
+
+                        </div>
+                        <div class="modal-footer d-flex align-items-center">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <nav class="navbar navbar-secondary navbar-expand-lg">
                 <div class="container">
                     <ul class="navbar-nav">
-                        <li class="nav-item {{ $menuActive == 'beranda' ? 'active' : '' }}">
+                        <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
                             <a href="{{ url('/', []) }}" class="nav-link">
                                 <i class="fas fa-fire"></i>
                                 <span>Beranda</span>
                             </a>
                         </li>
-                        <li class="nav-item {{ $menuActive == 'kompetensi' ? 'active' : '' }}">
-                            <a href="{{ url('/kompetensi', []) }}" class="nav-link">
-                                <i class="fas fa-brain"></i>
-                                <span>Kompetensi</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{ $menuActive == 'materi' ? 'active' : '' }}">
-                            <a href="{{ url('/materi', []) }}" class="nav-link">
+
+                        <li class="nav-item {{ request()->is('matapelajaran') ? 'active' : '' }}">
+                            <a href="{{ url('/matapelajaran', []) }}" class="nav-link">
                                 <i class="fas fa-book"></i>
                                 <span>Materi</span>
                             </a>
                         </li>
-                        <li class="nav-item {{ $menuActive == 'kuis' ? 'active' : '' }}">
-                            <a href="{{ url('/kuis', []) }}" class="nav-link">
+                        <li
+                            class="nav-item {{ request()->is('kuis') || request()->is('kuis/before-kelas') ? 'active' : '' }}">
+                            <a href="{{ url('/kuis/before-kelas') }}" class="nav-link">
                                 <i class="fas fa-book-reader"></i>
-                                <span>Kuis</span>
+                                <span>Ujian</span>
                             </a>
                         </li>
-                        <li class="nav-item {{ $menuActive == 'kirim-tugas' ? 'active' : '' }}">
+
+                        <li class="nav-item {{ request()->is('kirimtugas') ? 'active' : '' }}">
                             <a href="{{ url('/kirimtugas', []) }}" class="nav-link">
                                 <i class="fas fa-edit"></i>
-                                <span>Kirim Tugas</span>
+                                <span>Tugas</span>
                             </a>
                         </li>
-                        <li class="nav-item {{ $menuActive == 'forum' ? 'active' : '' }}">
+                        <li class="nav-item {{ request()->is('forum') ? 'active' : '' }}">
                             <a href="{{ url('/forum', []) }}" class="nav-link">
                                 <i class="fas fa-comments"></i>
                                 <span>Forum Diskusi</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{ request()->is('kelas') ? 'active' : '' }}">
+                            <a href="{{ url('/kelas', []) }}" class="nav-link">
+                                <i class="fas fa-school"></i>
+                                <span>Kelas</span>
                             </a>
                         </li>
                     </ul>
@@ -131,15 +163,14 @@
             </div>
             <footer class="main-footer">
                 <p class="text-center">
-                    Copyright &copy; {{ date('Y') }} By <a href="#" target="_blank">{{ env('APP_NAME') }}</a>
+                    Copyright &copy; {{ date('Y') }} By <a href="#"
+                        target="_blank">{{ env('APP_NAME') }}</a>
                 </p>
             </footer>
         </div>
     </div>
 
-    <!-- Modal Profile Peneliti -->
-    <x-profile-modal />
-
+ 
     <!-- General JS Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>

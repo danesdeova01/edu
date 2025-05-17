@@ -14,7 +14,13 @@ class Tugas extends Model
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'konten',
+        'matapelajaran_id',
+        'kelas_id',
+        'file',
+        'due_date',
+    ];
 
     public function jawabans()
     {
@@ -25,4 +31,10 @@ class Tugas extends Model
     {
         return $this->belongsTo('App\Models\MataPelajaran');
     }
+   
+    public function kelas()
+{
+    return $this->belongsTo('App\Models\Kelas');
+}
+
 }

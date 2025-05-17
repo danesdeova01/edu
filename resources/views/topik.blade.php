@@ -1,25 +1,19 @@
 @extends('layouts.web')
-
-@section('title')
-    {{ $topik->nama }}
-@endsection
-
-@section('breadcrumb')
-    <div class="breadcrumb-item">{{ $topik->nama }}</div>
-@endsection
-
+@section('title', $topik->nama)
 @section('content')
-    <div class="row">
-        <div class="col-md-12 mb-3">
-            <iframe src="{{ asset('storage/materi/file/' . $topik->file) }}" frameborder="0" width="100%"
-                height="500"></iframe>
-        </div>
-        <div class="col-md-12 mb-3">
-            <a href="{{ asset('storage/materi/file/' . $topik->file) }}" target="_blank" class="btn btn-outline-primary mb-3">
-                Download Materi
-            </a>
-
+    <div class="container">
+        <div class="mb-3">
             {!! $topik->konten !!}
         </div>
+       @if ($topik->file)
+    <a href="{{ route('materi.download', $topik->file) }}" class="btn btn-outline-primary">
+        Download Materi
+    </a>
+@else
+    <button class="btn btn-secondary mb-2" disabled>
+        Tidak ada file
+    </button>
+@endif
+
     </div>
 @endsection

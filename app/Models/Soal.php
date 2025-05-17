@@ -15,4 +15,10 @@ class Soal extends Model
      * @var array
      */
     protected $guarded = [];
+
+
+    public function materi()
+    {
+        return $this->belongsTo(Topik::class, 'materi_id');
+    }
 }

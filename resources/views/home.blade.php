@@ -16,7 +16,7 @@
                         <h4>Materi</h4>
                     </div>
                     <div class="card-body">
-                        {{ $total_materi }}
+                        {{ $total_matapelajaran }}
                     </div>
                 </div>
             </div>

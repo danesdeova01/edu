@@ -43,4 +43,13 @@ class ForumController extends Controller
         $forum = Forum::with(['user', 'replies.user'])->findOrFail($id);
         return view('admin.forum.detail', compact('forum'));
     }
+    
+    public function destroy($id)
+    {
+        $forum = Forum::findOrFail($id);
+        $forum->delete();
+
+        Alert::success('Berhasil', 'Topik diskusi berhasil dihapus');
+        return redirect()->route('admin.forum.index');
+    }
 }

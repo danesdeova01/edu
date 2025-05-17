@@ -20,4 +20,9 @@ class Jawaban extends Model
     {
         return $this->belongsTo('App\Models\Tugas');
     }
+
+    public function review()
+    {
+        return $this->hasOne(JawabanReview::class, 'jawaban_id');
+    }
 }
